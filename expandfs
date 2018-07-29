@@ -10,26 +10,20 @@ raspi_config="raspi-config"
 cmdline_file='/boot/cmdline.txt'
 resize2fs_one_file='/etc/init.d/resize2fs_once'
 
-while read line
-do
-  result=$(echo $line | grep "${raspi_config}")
-  if [ "$result" != "" ];then
-      found=true
-  fi
-done < $cmdline_file
+found=$(grep -rnw 'cmdline.txt' -e "${raspi_config}")
 
-if  $found ;then
-  echo 'cmdline.txt content found raspi-config'
+if [ "${found}" != "" ] ;then
+  echo 'raspi-config already exists in /boot/cmdline.txt, skipping.'
 else
-  echo 'cmdline.txt content not found raspi-config, add init=\/usr\/lib\/raspi-config\/init_resize.sh to /boot/cmdline.txt'
-  sed -i "s/rootwait/rootwait quiet init=\/usr\/lib\/raspi-config\/init_resize.sh/g" $cmdline_file
+  echo 'raspi-config not exists in /boot/cmdline.txt, append "init=/usr/lib/raspi-config/init_resize.sh" to /boot/cmdline.txt'
+  sed -i "s/rootwait/rootwait quiet init=\/usr\/lib\/raspi-config\/init_resize.sh/g" ${cmdline_file}
 fi
 
 echo 'create /etc/init.d/resize2fs_once file'
-rm -rf $resize2fs_one_file
-touch $resize2fs_one_file
+rm -rf ${resize2fs_one_file}
+touch ${resize2fs_one_file}
 
-cat <<EOT >> $resize2fs_one_file
+cat <<EOT >> ${resize2fs_one_file}
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          resize2fs_once
@@ -60,7 +54,7 @@ esac
 EOT
 
 echo '/etc/init.d/resize2fs_once file authenticate'
-sudo chmod +x $resize2fs_one_file
+sudo chmod +x ${resize2fs_one_file}
 sudo update-rc.d resize2fs_once defaults
 
 echo 'finish'
