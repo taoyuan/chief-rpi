@@ -10,7 +10,7 @@ raspi_config="raspi-config"
 cmdline_file='/boot/cmdline.txt'
 resize2fs_one_file='/etc/init.d/resize2fs_once'
 
-found=$(grep -rnw 'cmdline.txt' -e "${raspi_config}")
+found=$(grep -rnw "${cmdline_file}" -e "${raspi_config}")
 
 if [ "${found}" != "" ] ;then
   echo 'raspi-config already exists in /boot/cmdline.txt, skipping.'
