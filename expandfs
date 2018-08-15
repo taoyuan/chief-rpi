@@ -57,4 +57,7 @@ echo '/etc/init.d/resize2fs_once file authenticate'
 sudo chmod +x ${resize2fs_one_file}
 sudo update-rc.d resize2fs_once defaults
 
+echo 'sync'
+sudo sync
+
 echo 'finish'
