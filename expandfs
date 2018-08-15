@@ -17,6 +17,7 @@ if [ "${found}" != "" ] ;then
 else
   echo 'raspi-config not exists in /boot/cmdline.txt, append "init=/usr/lib/raspi-config/init_resize.sh" to /boot/cmdline.txt'
   sed -i "s/rootwait/rootwait quiet init=\/usr\/lib\/raspi-config\/init_resize.sh/g" ${cmdline_file}
+  sudo sync
 fi
 
 echo 'create /etc/init.d/resize2fs_once file'
@@ -56,8 +57,5 @@ EOT
 echo '/etc/init.d/resize2fs_once file authenticate'
 sudo chmod +x ${resize2fs_one_file}
 sudo update-rc.d resize2fs_once defaults
-
-echo 'sync'
-sudo sync
 
 echo 'finish'
